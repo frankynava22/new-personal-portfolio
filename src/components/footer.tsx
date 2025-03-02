@@ -106,21 +106,55 @@ const Footer: React.FC = () => {
     });
   };
   
+  // Add a handleLinkClick function to handle smooth scrolling
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   const year = new Date().getFullYear();
   
   return (
     <FooterContainer>
       <FooterContent>
         <FooterText>
-          Thanks for stopping by! Let's build something amazing together.
+          Thanks for stopping by!
         </FooterText>
         
         <FooterLinks>
-          <FooterLink href="#about">About</FooterLink>
-          <FooterLink href="#experience">Experience</FooterLink>
-          <FooterLink href="#skills">Skills</FooterLink>
-          <FooterLink href="#projects">Projects</FooterLink>
-          <FooterLink href="#contact">Contact</FooterLink>
+          <FooterLink 
+            href="#about" 
+            onClick={(e) => handleLinkClick(e, 'about')}
+          >
+            About
+          </FooterLink>
+          <FooterLink 
+            href="#experience" 
+            onClick={(e) => handleLinkClick(e, 'experience')}
+          >
+            Experience
+          </FooterLink>
+          <FooterLink 
+            href="#skills" 
+            onClick={(e) => handleLinkClick(e, 'skills')}
+          >
+            Skills
+          </FooterLink>
+          <FooterLink 
+            href="#projects" 
+            onClick={(e) => handleLinkClick(e, 'projects')}
+          >
+            Projects
+          </FooterLink>
+          <FooterLink 
+            href="#contact" 
+            onClick={(e) => handleLinkClick(e, 'contact')}
+          >
+            Contact
+          </FooterLink>
         </FooterLinks>
         
         <FooterSocialLinks>

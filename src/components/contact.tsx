@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import emailjs from '@emailjs/browser';
 
 const ContactSection = styled.section`
   padding-top: ${({ theme }) => theme.spacing.xxl};
@@ -220,8 +221,8 @@ const SocialLink = styled.a`
   }
 `;
 
-const SuccessMessage = styled.div<{ visible: boolean }>`
-  background-color: #10b981;
+const MessageNotification = styled.div<{ visible: boolean; success: boolean }>`
+  background-color: ${props => props.success ? '#10b981' : '#ef4444'};
   color: white;
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -230,31 +231,59 @@ const SuccessMessage = styled.div<{ visible: boolean }>`
 `;
 
 const Contact: React.FC = () => {
+  const form = useRef<HTMLFormElement>(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   const sectionRef = useRef<HTMLElement>(null);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Mock form submission
-    // In a real application, you would handle the form submission to a backend or email service
-    console.log({ name, email, message });
+    if (!form.current) return;
     
-    // Show success message
-    setShowSuccess(true);
+    setIsSubmitting(true);
     
-    // Reset form
-    setName('');
-    setEmail('');
-    setMessage('');
-    
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 5000);
+    // Use EmailJS to send the form data directly to your email
+    emailjs.sendForm(
+      'service_xu1r6sb', 
+      'template_lm3v7rk', 
+      form.current,
+      'Asc0_XuP2Z-DSwBvy'
+    )
+      .then((result) => {
+        console.log('Email successfully sent!', result.text);
+        setIsSuccess(true);
+        setNotificationMessage('Thanks for your message! I\'ll get back to you soon.');
+        setShowNotification(true);
+        
+        // Reset form
+        setName('');
+        setEmail('');
+        setMessage('');
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 5000);
+      }, (error) => {
+        console.error('Error sending email:', error.text);
+        setIsSuccess(false);
+        setNotificationMessage('Oops! Something went wrong. Please try again later.');
+        setShowNotification(true);
+        
+        // Hide error message after 5 seconds
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 5000);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
   
   useEffect(() => {
@@ -286,18 +315,19 @@ const Contact: React.FC = () => {
       
       <ContactContainer>
         <ContactFormContainer>
-          <ContactForm onSubmit={handleSubmit}>
+          <ContactForm ref={form} onSubmit={handleSubmit}>
             <FormTitle>Send Me a Message</FormTitle>
             
-            <SuccessMessage visible={showSuccess}>
-              Thanks for your message! I'll get back to you soon.
-            </SuccessMessage>
+            <MessageNotification visible={showNotification} success={isSuccess}>
+              {notificationMessage}
+            </MessageNotification>
             
             <FormGroup>
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="from_name">Name</Label>
               <Input 
                 type="text" 
-                id="name" 
+                id="from_name" 
+                name="from_name" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 required 
@@ -305,10 +335,11 @@ const Contact: React.FC = () => {
             </FormGroup>
             
             <FormGroup>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="reply_to">Email</Label>
               <Input 
                 type="email" 
-                id="email" 
+                id="reply_to" 
+                name="reply_to" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
@@ -319,13 +350,23 @@ const Contact: React.FC = () => {
               <Label htmlFor="message">Message</Label>
               <TextArea 
                 id="message" 
+                name="message" 
                 value={message} 
                 onChange={(e) => setMessage(e.target.value)} 
                 required 
               />
             </FormGroup>
             
-            <SubmitButton type="submit">Send Message</SubmitButton>
+            {/* Hidden fields for EmailJS template */}
+            <Input 
+              type="hidden" 
+              name="to_name" 
+              value="Franky" 
+            />
+            
+            <SubmitButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </SubmitButton>
           </ContactForm>
         </ContactFormContainer>
         
@@ -333,7 +374,7 @@ const Contact: React.FC = () => {
           <ContactInfo>
             <InfoTitle>Contact Information</InfoTitle>
             <InfoText>
-              I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll get back to you as soon as possible!
+              Thanks for wanting to reach out! You can contact me via email or contact me through one of my social links!
             </InfoText>
             
             <ContactDetails>

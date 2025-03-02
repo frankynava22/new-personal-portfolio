@@ -130,10 +130,10 @@ const Hero: React.FC = () => {
       <HeroContent>
         <Greeting>Hi there, my name is</Greeting>
         <Name>Franky <span>Nava</span></Name>
-        <Subtitle>I build things for the web.</Subtitle>
+        <Subtitle>I like to code.</Subtitle>
         <Description>
-          I'm a software developer specializing in building exceptional digital experiences. 
-          Currently, I'm focused on building accessible, human-centered products.
+          I'm a full stack software developer specializing in building exceptional digital experiences. 
+          Currently, I'm focused on learning more about AI.
         </Description>
         <CTA href="#contact">Get In Touch</CTA>
         

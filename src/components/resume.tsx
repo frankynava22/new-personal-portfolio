@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 const ResumeSection = styled.section`
@@ -115,7 +115,7 @@ const DownloadResumeButton = styled.a`
   }
 `;
 
-const UploadResumeButton = styled.button`
+const ViewResumeButton = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,10 +151,6 @@ const ResumePreview = styled.div`
   }
 `;
 
-const FileUploadInput = styled.input`
-  display: none;
-`;
-
 const PreviewTitle = styled.h3`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.white};
@@ -180,66 +176,10 @@ const PDFEmbed = styled.embed`
   border: none;
 `;
 
-const PDFPlaceholder = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-  text-align: center;
-  
-  svg {
-    width: 80px;
-    height: 80px;
-    color: ${({ theme }) => theme.colors.textLight};
-    margin-bottom: ${({ theme }) => theme.spacing.lg};
-  }
-  
-  p {
-    color: ${({ theme }) => theme.colors.textLight};
-    font-size: 1.1rem;
-    max-width: 350px;
-  }
-`;
-
 const Resume: React.FC = () => {
-  const [resumePdf, setResumePdf] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Path to your resume in your repository
+  const resumePdfPath = 'src/assets/Nava_Francisco_Resume.pdf';
   const sectionRef = useRef<HTMLElement>(null);
-  
-  const handleUploadClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-  
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-      const fileUrl = URL.createObjectURL(file);
-      setResumePdf(fileUrl);
-      
-      // Store in localStorage for persistence
-      localStorage.setItem('resumePdfUrl', fileUrl);
-    }
-  };
-  
-  useEffect(() => {
-    // Check if we have a stored resume PDF URL
-    const storedResumeUrl = localStorage.getItem('resumePdfUrl');
-    if (storedResumeUrl) {
-      setResumePdf(storedResumeUrl);
-    }
-    
-    // Cleanup function
-    return () => {
-      if (resumePdf) {
-        URL.revokeObjectURL(resumePdf);
-      }
-    };
-  }, []);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -277,28 +217,20 @@ const Resume: React.FC = () => {
           </ResumeIcon>
           
           <ResumeButtonsContainer>
-            <UploadResumeButton onClick={handleUploadClick}>
+            <ViewResumeButton href={resumePdfPath} target="_blank" rel="noopener noreferrer">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-              Upload Resume
-            </UploadResumeButton>
+              View Full Screen
+            </ViewResumeButton>
             
-            <FileUploadInput 
-              type="file" 
-              ref={fileInputRef} 
-              accept="application/pdf" 
-              onChange={handleFileChange}
-            />
-            
-            {resumePdf && (
-              <DownloadResumeButton href={resumePdf} download="franky-nava-resume.pdf">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download Resume
-              </DownloadResumeButton>
-            )}
+            <DownloadResumeButton href={resumePdfPath} download="Nava_Francisco_Resume.pdf">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Resume
+            </DownloadResumeButton>
           </ResumeButtonsContainer>
         </ResumeActions>
         
@@ -306,16 +238,7 @@ const Resume: React.FC = () => {
           <PreviewTitle>Resume Preview</PreviewTitle>
           
           <PDFContainer>
-            {resumePdf ? (
-              <PDFEmbed src={resumePdf} type="application/pdf" />
-            ) : (
-              <PDFPlaceholder>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p>Upload your resume to view and share it here. Only PDF files are supported.</p>
-              </PDFPlaceholder>
-            )}
+            <PDFEmbed src={resumePdfPath} type="application/pdf" />
           </PDFContainer>
         </ResumePreview>
       </ResumeContainer>

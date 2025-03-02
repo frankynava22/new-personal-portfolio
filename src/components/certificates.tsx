@@ -138,46 +138,26 @@ const Certificates: React.FC = () => {
   const certificates: Certificate[] = [
     {
       id: 1,
-      title: 'Full Stack Web Development',
+      title: 'Ultimate ASP.NET',
       issuer: 'Udemy',
-      date: 'June 2022',
-      credentialUrl: 'https://www.udemy.com/certificate/example1',
+      date: 'Feb 20, 2024',
+      credentialUrl: 'src/assets/asp_net.jpg',
     },
     {
       id: 2,
-      title: 'React - The Complete Guide',
+      title: 'React Hooks',
       issuer: 'Udemy',
-      date: 'March 2022',
-      credentialUrl: 'https://www.udemy.com/certificate/example2',
+      date: 'March 21, 2024',
+      credentialUrl: 'src/assets/react_hooks.jpg',
     },
     {
       id: 3,
-      title: 'TypeScript for Professionals',
-      issuer: 'Coursera',
-      date: 'January 2022',
-      credentialUrl: 'https://www.coursera.org/certificate/example3',
-    },
-    {
-      id: 4,
-      title: 'Advanced CSS and SASS',
-      issuer: 'Frontend Masters',
-      date: 'November 2021',
-      credentialUrl: 'https://frontendmasters.com/certificate/example4',
-    },
-    {
-      id: 5,
-      title: 'UI/UX Fundamentals',
-      issuer: 'Designlab',
-      date: 'September 2021',
-      credentialUrl: 'https://designlab.com/certificate/example5',
-    },
-    {
-      id: 6,
-      title: 'Node.js Backend Development',
+      title: 'Styled Components',
       issuer: 'Udemy',
-      date: 'July 2021',
-      credentialUrl: 'https://www.udemy.com/certificate/example6',
-    }
+      date: 'March 28, 2024',
+      credentialUrl: 'src/assets/styled_components.jpg',
+    },
+    
   ];
   
   useEffect(() => {

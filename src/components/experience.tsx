@@ -63,6 +63,7 @@ const TabButtons = styled.div`
     flex-direction: column;
     overflow-x: visible;
     min-width: 200px;
+    max-width: 200px;
     margin-right: ${({ theme }) => theme.spacing.xl};
   }
 `;
@@ -75,7 +76,6 @@ const TabButton = styled.button<{ active: boolean }>`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.9rem;
   text-align: left;
-  white-space: nowrap;
   position: relative;
   
   &::before {
@@ -104,18 +104,29 @@ const TabButton = styled.button<{ active: boolean }>`
 
 const TabContent = styled.div`
   flex-grow: 1;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 `;
 
 const ExperienceTitle = styled.h3`
   font-size: 1.4rem;
   color: ${({ theme }) => theme.colors.white};
   margin-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Organization = styled.h4`
   font-size: 1.2rem;
   color: ${({ theme }) => theme.colors.accent};
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 1rem;
+  }
 `;
 
 const Duration = styled.p`
@@ -145,6 +156,7 @@ const CategoryTabs = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
 `;
 
 const CategoryTab = styled.button<{ active: boolean }>`
@@ -165,66 +177,91 @@ const Experience: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<'all' | 'education' | 'work'>('all');
   const sectionRef = useRef<HTMLElement>(null);
   
-  // Sample data - replace with your actual experience
+  // Your actual experience data
   const experiences: ExperienceItem[] = [
+    // Education
     {
       id: 1,
       category: 'education',
       title: 'Bachelor of Science in Computer Science',
-      organization: 'University of Technology',
-      location: 'San Francisco, CA',
-      startDate: 'September 2018',
-      endDate: 'May 2022',
+      organization: 'The University of Texas Rio Grande Valley',
+      location: 'Edinburg, TX',
+      startDate: '2020',
+      endDate: 'Fall 2023',
       description: [
-        'Graduated with a 3.8 GPA',
-        'Specialized in Web Development and Software Engineering',
-        'Completed capstone project on scalable web applications',
-        'Active member of the Computer Science Student Association'
+        'GPA: 3.56',
+        'Expected Graduation: Fall 2023'
       ]
     },
     {
       id: 2,
-      category: 'work',
-      title: 'Frontend Developer',
-      organization: 'Tech Solutions Inc.',
-      location: 'San Francisco, CA',
-      startDate: 'June 2022',
-      endDate: 'Present',
+      category: 'education',
+      title: 'Associates Degree in Interdisciplinary Studies',
+      organization: 'South Texas College',
+      location: 'McAllen, TX',
+      startDate: 'August 2016',
+      endDate: 'June 2020',
       description: [
-        'Develop and maintain responsive web applications using React and TypeScript',
-        'Collaborate with UX/UI designers to implement pixel-perfect designs',
-        'Optimize application performance and improve code quality',
-        'Integrate RESTful APIs and implement state management solutions'
+        'GPA: 4.0'
       ]
     },
+    
+    // Work Experience
     {
       id: 3,
       category: 'work',
-      title: 'Web Development Intern',
-      organization: 'Digital Creatives',
-      location: 'San Jose, CA',
-      startDate: 'May 2021',
-      endDate: 'August 2021',
+      title: 'Data Analytics Intern',
+      organization: 'UT Health (Dallas Country Health and Human Services)',
+      location: 'Remote',
+      startDate: 'September 2023',
+      endDate: 'Present',
       description: [
-        'Assisted in developing and maintaining client websites',
-        'Implemented responsive designs using HTML, CSS, and JavaScript',
-        'Learned agile development methodologies and participated in daily stand-ups',
-        'Contributed to codebase improvements and bug fixes'
+        'Utilizing various software to efficiently gather and preprocess community data, ensuring accuracy and reliability for downstream analytics.',
+        'Leveraging Power BI to design and implement interactive dashboards, offering stakeholders an intuitive view of key public health metrics.',
+        'Organizing raw community data into impactful visualizations, aiding UT Health in data-driven decision-making as well as its stakeholders.',
+        'Streamlining the data processing pipeline, facilitating efficient analytics, and ensuring the data is sufficient and relevant for certain tasks.'
       ]
     },
     {
       id: 4,
-      category: 'education',
-      title: 'Web Development Bootcamp',
-      organization: 'CodeCamp',
-      location: 'Online',
-      startDate: 'January 2021',
-      endDate: 'April 2021',
+      category: 'work',
+      title: 'Research Assistant',
+      organization: 'Multiple Autonomous Robot Systems (Swarm Robotics) - UTRGV',
+      location: 'Edinburg, Texas',
+      startDate: 'April 2023',
+      endDate: 'Present',
       description: [
-        'Intensive 12-week program focusing on full-stack web development',
-        'Built projects using React, Node.js, and MongoDB',
-        'Collaborated with peers on team projects simulating real-world development',
-        'Received certificate of completion with distinction'
+        'Actively engaged in collaborative research that focuses on the practical application of Python programming in autonomous robot behavior.',
+        'Implementing simulations in virtual environments to anticipate robotic behaviors, with the aim of enhancing predictability in the real world.',
+        'Transitioning from virtual simulations to real world design applications using ROS and controller code from the simulations.',
+        'Utilizing techniques such as foraging algorithms, path planning and obstacle avoidance to optimize robotic response.'
+      ]
+    },
+    {
+      id: 5,
+      category: 'work',
+      title: 'Web Master Intern',
+      organization: 'Edinburg Consolidated School District',
+      location: 'Edinburg, Texas',
+      startDate: 'September 2022',
+      endDate: 'Present',
+      description: [
+        'Managing over 30 school websites using a content management system and serving as a go-to resource for technology troubleshooting.',
+        'Utilizing Structured Query Language (SQL) to effectively navigate the district website\'s database and extract relevant information.',
+        'Collaborating with cross-functional teams to design and implement innovative solutions for improved efficiency and user experience.',
+        'Managing and analyzing diverse datasets and employing advanced data processing techniques to drive informed decision making.'
+      ]
+    },
+    {
+      id: 6,
+      category: 'work',
+      title: 'Software Developer',
+      organization: 'Bechtel',
+      location: 'Reston, Virginia',
+      startDate: 'June 2022',
+      endDate: 'August 2022',
+      description: [
+        'Classified',
       ]
     }
   ];
@@ -255,6 +292,11 @@ const Experience: React.FC = () => {
       }
     };
   }, []);
+  
+  useEffect(() => {
+    // Reset active tab when category changes
+    setActiveTab(0);
+  }, [activeCategory]);
   
   return (
     <ExperienceSection id="experience" ref={sectionRef} className="fade-in">
@@ -289,7 +331,7 @@ const Experience: React.FC = () => {
               active={activeTab === index}
               onClick={() => setActiveTab(index)}
             >
-              {exp.organization}
+              {exp.organization.split(' - ')[0].split(' (')[0]}
             </TabButton>
           ))}
         </TabButtons>

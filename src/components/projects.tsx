@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface ProjectLink {
-  type: 'github' | 'demo' | 'article';
+  type: 'demo' | 'article';
   url: string;
 }
 
@@ -148,241 +148,72 @@ const ProjectLink = styled.a`
   }
 `;
 
-const CodeSnippetButton = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.accent};
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
+const DemoButton = styled.a`
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.accent};
+  border: 1px solid ${({ theme }) => theme.colors.accent};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+  font-size: 0.9rem;
+  font-family: ${({ theme }) => theme.fonts.mono};
+  text-decoration: none;
+  transition: all ${({ theme }) => theme.transitions.standard};
   margin-top: ${({ theme }) => theme.spacing.md};
   
   &:hover {
-    text-decoration: underline;
+    background-color: ${({ theme }) => `${theme.colors.accent}20`};
   }
   
   svg {
-    margin-right: ${({ theme }) => theme.spacing.xs};
+    width: 16px;
+    height: 16px;
   }
 `;
 
-const ModalOverlay = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  z-index: 1000;
-  display: ${props => props.isOpen ? 'flex' : 'none'};
-  justify-content: center;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.lg};
-`;
-
-const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.colors.secondary};
-  border-radius: ${({ theme }) => theme.borderRadius.medium};
-  max-width: 800px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-`;
-
-const ModalCloseButton = styled.button`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing.md};
-  right: ${({ theme }) => theme.spacing.md};
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 1.5rem;
-  cursor: pointer;
-  
-  &:hover {
-    color: ${({ theme }) => theme.colors.accent};
-  }
-`;
-
-const ModalHeader = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => `${theme.colors.accent}30`};
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 1.6rem;
-  color: ${({ theme }) => theme.colors.white};
-`;
-
-const CodeSnippet = styled.pre`
-  padding: ${({ theme }) => theme.spacing.lg};
-  background-color: ${({ theme }) => theme.colors.black};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  overflow-x: auto;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: ${({ theme }) => theme.colors.text};
-  
-  code {
-    display: block;
-  }
-`;
+// Simple SVG icon placeholder component
+const IconPlaceholder = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+  </svg>
+);
 
 const Projects: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   
-  // Sample data - replace with your actual projects
+  // Your actual projects data
   const projects: Project[] = [
     {
       id: 1,
-      title: 'Personal Portfolio Website',
-      description: 'A responsive portfolio website built with React and Styled Components featuring a space theme, parallax effects, and smooth animations.',
-      technologies: ['React', 'TypeScript', 'Styled Components', 'Vite'],
-      codeSnippet: `import { useEffect, useRef } from 'react';
-import styled from 'styled-components';
-
-const StarsContainer = styled.div\`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
-\`;
-
-interface StarProps {
-  size: number;
-  x: number;
-  y: number;
-  speed: number;
-  opacity: number;
-}
-
-const Star = styled.div<StarProps>\`
-  position: absolute;
-  width: \${props => props.size}px;
-  height: \${props => props.size}px;
-  background-color: white;
-  border-radius: 50%;
-  top: \${props => props.y}px;
-  left: \${props => props.x}px;
-  opacity: \${props => props.opacity};
-\`;
-
-// Rest of parallax stars component...`,
+      title: 'E-puck Robot',
+      description: 'Developed a virtual autonomous scavenging e-puck robot using Python and Webots that uses bug0-algorithm to reach a target destination. Currently improving the e-puck\'s capabilities to find "food" and create a memory-limited path that is transmitted back to base for other e-pucks.',
+      technologies: ['Python', 'Webots', 'ROS'],
       links: [
-        { type: 'github', url: 'https://github.com/username/portfolio' },
-        { type: 'demo', url: 'https://portfolio.username.com' }
+        { type: 'demo', url: '#demo-epuck' }
       ]
     },
     {
       id: 2,
-      title: 'E-Commerce Dashboard',
-      description: 'An admin dashboard for an e-commerce platform with sales analytics, inventory management, and order processing features.',
-      technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js'],
-      codeSnippet: `// Sales chart component using Chart.js
-import React from 'react';
-import { Line } from 'react-chartjs-2';
-
-const SalesChart = ({ salesData }) => {
-  const data = {
-    labels: salesData.map(item => item.month),
-    datasets: [
-      {
-        label: 'Monthly Sales',
-        data: salesData.map(item => item.amount),
-        fill: false,
-        backgroundColor: '#64ffda',
-        borderColor: '#64ffda',
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    // Additional chart options...
-  };
-
-  return (
-    <div className="chart-container">
-      <Line data={data} options={options} />
-    </div>
-  );
-};
-
-export default SalesChart;`,
+      title: 'EasyPeasyPal App',
+      description: 'Creating an app that allows users to harness the full potential of technology to address everyday requirements regardless of their tech experience. Utilizing the Flutter framework and software engineering methodologies to develop a cross-platform mobile app for a seamless user experience.',
+      technologies: ['Flutter', 'Dart', 'VS Code'],
       links: [
-        { type: 'github', url: 'https://github.com/username/ecommerce-dashboard' },
-        { type: 'demo', url: 'https://dashboard.example.com' }
+        { type: 'demo', url: '#demo-easypeasypal' }
       ]
     },
     {
       id: 3,
-      title: 'Weather App',
-      description: 'A weather application that displays current weather conditions and forecasts based on user location or search. Features include interactive maps and detailed weather data.',
-      technologies: ['React', 'TypeScript', 'OpenWeatherMap API', 'Leaflet'],
-      codeSnippet: `// Weather data fetching hook
-import { useState, useEffect } from 'react';
-
-export const useWeatherData = (location) => {
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          \`https://api.openweathermap.org/data/2.5/weather?q=\${location}&appid=\${process.env.REACT_APP_WEATHER_API_KEY}&units=metric\`
-        );
-        
-        if (!response.ok) {
-          throw new Error('Weather data not available');
-        }
-        
-        const data = await response.json();
-        setWeather(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        setWeather(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (location) {
-      fetchWeather();
-    }
-  }, [location]);
-
-  return { weather, loading, error };
-};`,
+      title: 'Access Request Form',
+      description: 'Developing a web application that allows employees to request access permissions to the district\'s internal management applications. Web application is built using C# .NET Framework, REST API\'s, and custom SQL queries for data retrieval and digital record keeping.',
+      technologies: ['C# .NET Framework', 'HTTP Client', 'SQL', 'Content Management System'],
       links: [
-        { type: 'github', url: 'https://github.com/username/weather-app' },
-        { type: 'demo', url: 'https://weather.example.com' }
+        { type: 'demo', url: '#demo-access-request' }
       ]
     }
   ];
-  
-  const openModal = (project: Project) => {
-    setSelectedProject(project);
-    setModalOpen(true);
-  };
-  
-  const closeModal = () => {
-    setModalOpen(false);
-  };
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -407,21 +238,6 @@ export const useWeatherData = (location) => {
     };
   }, []);
   
-  // Close modal on escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-  
   return (
     <ProjectsSection id="projects" ref={sectionRef} className="fade-in">
       <SectionTitle>What I've Built</SectionTitle>
@@ -430,7 +246,7 @@ export const useWeatherData = (location) => {
         {projects.map(project => (
           <ProjectCard key={project.id}>
             <ProjectImageContainer>
-              <ProjectImage bgImage={project.imageUrl} />
+              <ProjectImage />
             </ProjectImageContainer>
             <ProjectContent>
               <ProjectTitle>{project.title}</ProjectTitle>
@@ -440,36 +256,13 @@ export const useWeatherData = (location) => {
                   <TechnologyItem key={index}>{tech}</TechnologyItem>
                 ))}
               </TechnologiesList>
-              <ProjectLinks>
-                {project.links.map((link, index) => (
-                  <ProjectLink key={index} href={link.url} target="_blank" rel="noopener noreferrer">
-                    {link.type === 'github' && '💻'}
-                    {link.type === 'demo' && '🔗'}
-                    {link.type === 'article' && '📄'}
-                  </ProjectLink>
-                ))}
-              </ProjectLinks>
-              {project.codeSnippet && (
-                <CodeSnippetButton onClick={() => openModal(project)}>
-                  <span>📋</span> View Code Snippet
-                </CodeSnippetButton>
-              )}
+              {/* <DemoButton href={project.links[0].url} target="_blank" rel="noopener noreferrer">
+                <IconPlaceholder /> View Demo
+              </DemoButton> */}
             </ProjectContent>
           </ProjectCard>
         ))}
       </ProjectsGrid>
-      
-      <ModalOverlay isOpen={modalOpen} onClick={closeModal}>
-        <ModalContent onClick={e => e.stopPropagation()}>
-          <ModalCloseButton onClick={closeModal}>×</ModalCloseButton>
-          <ModalHeader>
-            <ModalTitle>{selectedProject?.title} - Code Snippet</ModalTitle>
-          </ModalHeader>
-          <CodeSnippet>
-            <code>{selectedProject?.codeSnippet}</code>
-          </CodeSnippet>
-        </ModalContent>
-      </ModalOverlay>
     </ProjectsSection>
   );
 };
